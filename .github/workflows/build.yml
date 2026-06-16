@@ -20,31 +20,48 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
 
+    - name: Verify project structure
+      run: |
+        echo "=== Project Structure ==="
+        echo "Checking required directories..."
+        [ -d "src" ] && echo "✓ src/ exists" || echo "✗ src/ missing"
+        [ -d "web" ] && echo "✓ web/ exists" || echo "✗ web/ missing"
+        [ -d "sql" ] && echo "✓ sql/ exists" || echo "✗ sql/ missing"
+        [ -f "README.md" ] && echo "✓ README.md exists" || echo "✗ README.md missing"
+        [ -f ".gitignore" ] && echo "✓ .gitignore exists" || echo "✗ .gitignore missing"
+        echo ""
+        echo "=== Java Source Files ==="
+        find src -name "*.java" | wc -l
+        echo "Java files found"
+        echo ""
+        echo "=== JSP Files ==="
+        find web -name "*.jsp" | wc -l
+        echo "JSP files found"
+        echo ""
+        echo "=== CSS/JS Files ==="
+        find web/static -type f | wc -l
+        echo "Static files found"
+
     - name: Download dependencies
       run: |
         mkdir -p build/lib
-        curl -L -o build/lib/servlet-api.jar "https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar"
-        curl -L -o build/lib/jsp-api.jar "https://repo1.maven.org/maven2/javax/servlet/jsp/javax.servlet-api/2.3.3/javax.servlet-api-2.3.3.jar"
-        curl -L -o build/lib/gson.jar "https://repo1.maven.org/maven2/com/google/code/gson/gson/2.11.0/gson-2.11.0.jar"
-        curl -L -o build/lib/mysql-connector.jar "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar"
-
-    - name: Create db.properties
-      run: |
-        mkdir -p src
-        cat > src/db.properties << 'EOF'
-        jdbc.driver=com.mysql.cj.jdbc.Driver
-        jdbc.url=jdbc:mysql://localhost:3306/edu_admin?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowPublicKeyRetrieval=true
-        jdbc.username=root
-        jdbc.password=root
-        EOF
+        curl -sL -o build/lib/servlet-api.jar "https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar"
+        curl -sL -o build/lib/jsp-api.jar "https://repo1.maven.org/maven2/javax/servlet/jsp/javax.servlet-api/2.3.3/javax.servlet-api-2.3.3.jar"
+        curl -sL -o build/lib/gson.jar "https://repo1.maven.org/maven2/com/google/code/gson/gson/2.11.0/gson-2.11.0.jar"
+        curl -sL -o build/lib/mysql-connector.jar "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar"
+        echo "Dependencies downloaded:"
+        ls -la build/lib/
 
     - name: Compile Java source
       run: |
         mkdir -p build/classes
         find src -name "*.java" > sources.txt
-        javac -d build/classes -cp "build/lib/*" @sources.txt
+        echo "Compiling $(wc -l < sources.txt) Java files..."
+        javac -d build/classes -cp "build/lib/*" @sources.txt 2>&1
+        echo "Compilation completed with exit code: $?"
 
-    - name: Verify compilation
+    - name: Show compilation results
+      if: always()
       run: |
-        echo "Compilation successful!"
-        find build/classes -name "*.class" | head -20
+        echo "=== Compiled Classes ==="
+        find build/classes -name "*.class" 2>/dev/null | head -30 || echo "No classes compiled"
