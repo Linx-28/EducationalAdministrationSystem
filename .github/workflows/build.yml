@@ -19,10 +19,18 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
-        cache: maven
+
+    - name: Download dependencies
+      run: |
+        mkdir -p build/lib
+        curl -L -o build/lib/servlet-api.jar "https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar"
+        curl -L -o build/lib/jsp-api.jar "https://repo1.maven.org/maven2/javax/servlet/jsp/javax.servlet-api/2.3.3/javax.servlet-api-2.3.3.jar"
+        curl -L -o build/lib/gson.jar "https://repo1.maven.org/maven2/com/google/code/gson/gson/2.11.0/gson-2.11.0.jar"
+        curl -L -o build/lib/mysql-connector.jar "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar"
 
     - name: Create db.properties
       run: |
+        mkdir -p src
         cat > src/db.properties << 'EOF'
         jdbc.driver=com.mysql.cj.jdbc.Driver
         jdbc.url=jdbc:mysql://localhost:3306/edu_admin?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowPublicKeyRetrieval=true
@@ -34,12 +42,9 @@ jobs:
       run: |
         mkdir -p build/classes
         find src -name "*.java" > sources.txt
-        javac -d build/classes -cp "web/WEB-INF/lib/*" @sources.txt
-      continue-on-error: true
+        javac -d build/classes -cp "build/lib/*" @sources.txt
 
-    - name: Check compilation result
+    - name: Verify compilation
       run: |
-        if [ -f "sources.txt" ]; then
-          echo "Source files found: $(wc -l < sources.txt)"
-          echo "Compilation completed."
-        fi
+        echo "Compilation successful!"
+        find build/classes -name "*.class" | head -20
