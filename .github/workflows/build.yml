@@ -19,7 +19,6 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
-        cache: 'none'
 
     - name: Verify project structure
       run: |
