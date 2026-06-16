@@ -1,0 +1,11 @@
+*.class
+*.jar
+*.war
+*.ear
+.idea/
+*.iml
+out/
+target/
+.DS_Store
+Thumbs.db
+src/db.properties

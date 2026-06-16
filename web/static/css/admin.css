@@ -1,0 +1,24 @@
+.admin-layout { display: flex; min-height: calc(100vh - 56px); }
+.admin-sidebar { width: 200px; background: #001529; flex-shrink: 0; }
+.admin-sidebar .menu-item { display: block; padding: 14px 24px; color: rgba(255,255,255,.65); font-size: 14px; transition: all .3s; }
+.admin-sidebar .menu-item:hover, .admin-sidebar .menu-item.active { color: #fff; background: #1890ff; }
+.admin-main { flex: 1; padding: 24px; background: #f0f2f5; }
+
+.dashboard-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.dashboard-card { background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.dashboard-card .title { font-size: 14px; color: #999; }
+.dashboard-card .value { font-size: 28px; font-weight: bold; color: #333; margin-top: 8px; }
+.dashboard-card .value.blue { color: #1890ff; }
+.dashboard-card .value.green { color: #52c41a; }
+.dashboard-card .value.orange { color: #fa8c16; }
+.dashboard-card .value.red { color: #ff4d4f; }
+
+.search-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+.search-bar input, .search-bar select { padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; }
+
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.modal { background: #fff; border-radius: 8px; padding: 24px; width: 500px; max-height: 80vh; overflow-y: auto; }
+.modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
